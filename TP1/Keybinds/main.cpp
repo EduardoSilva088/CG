@@ -8,8 +8,47 @@
 #include <math.h>
 #include <stdio.h>
 
-float scale = 0;
+float scale = 1.0f;
+float angle = 0;
+float posx = 0;
+float posy = 0;
+float posz = 0;
 
+
+
+void reactKeyboard(unsigned char key, int x, int y){
+	switch (key){
+		case '+':
+			scale += 0.1;
+			break;
+		case '-':
+			scale -= 0.1;
+			break;
+		case 'w':
+			posz -= 0.1;
+			break;
+		case 's':
+			posz += 0.1;
+			break;
+		case 'a':
+			posx -= 0.1;
+			break;
+		case 'd':
+			posx += 0.1;
+			break;
+		case 'h':
+			angle += 1;
+			break;
+		case 'l':
+			angle -= 1;
+			break;
+		case 'j':
+			posy += 0.1;
+			break;
+		case 'k':
+			posy -= 0.1;
+	}
+}
 
 void changeSize(int w, int h){
 	// Prevent a divide by zero, when window is too short
@@ -42,9 +81,9 @@ void renderScene(void){
 		0.0f, 1.0f, 0.0f);
 		
 	// put drawing instructions here
-
-	scale = fabs(sin(glutGet(GLUT_ELAPSED_TIME)/10 * (3.142/180)));
-
+	glColor3f(1.0, 1.0, 0);
+	glTranslated(posx,posy,posz);
+	glRotated(angle, 0,1,0);
 	glutWireTeapot(scale);
 
 	
@@ -75,6 +114,7 @@ int main(int argc, char** argv){
     glutReshapeFunc(changeSize);
     glutIdleFunc(renderScene);
     glutDisplayFunc(renderScene);
+	glutKeyboardFunc(reactKeyboard);
 
     // some OpenGL settings
     glEnable(GL_DEPTH_TEST);
