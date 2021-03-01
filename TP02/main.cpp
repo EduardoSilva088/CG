@@ -6,6 +6,8 @@
 
 #include <math.h>
 
+#include <iostream>
+
 float angle = 0;
 float posx = 0;
 float posy = 0;
@@ -14,6 +16,13 @@ float posz = 0;
 float xScale = 1.0f;
 float yScale = 1.0f;
 float zScale = 1.0f;
+
+GLclampf colorA = 1;
+GLclampf colorR = 0.5;
+GLclampf colorG = 1;
+GLclampf colorB = 0.5;
+
+GLenum drawType = GL_FILL;
 
 void changeSize(int w, int h) {
 
@@ -42,9 +51,9 @@ void changeSize(int w, int h) {
 
 
 void renderScene(void) {
-
 	// clear buffers
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 
 	// set the camera
 	glLoadIdentity();
@@ -56,15 +65,15 @@ void renderScene(void) {
     glBegin(GL_LINES);
         // X axis in red
         glColor3f(1.0f, 0.0f, 0.0f);
-        glVertex3f(-100.0f, 0.0f, 0.0f);
+        glVertex3f(0.0f, 0.0f, 0.0f);
         glVertex3f( 100.0f, 0.0f, 0.0f);
         // Y Axis in Green
         glColor3f(0.0f, 1.0f, 0.0f);
-        glVertex3f(0.0f, -100.0f, 0.0f);
+        glVertex3f(0.0f, 0.0f, 0.0f);
         glVertex3f(0.0f,  100.0f, 0.0f);
         // Z Axis in Blue
         glColor3f(0.0f, 0.0f, 1.0f);
-        glVertex3f(0.0f, 0.0f, -100.0f);
+        glVertex3f(0.0f, 0.0f, 0.0f);
         glVertex3f(0.0f, 0.0f,  100.0f);
     glEnd();
 
@@ -76,10 +85,13 @@ void renderScene(void) {
     glBegin(GL_TRIANGLES);
 
         // Base
+        // First Triangle
         glColor3f(1.0f,1.0f,1.0f); // White
         glVertex3f(1.0f, 0.0f, 1.0f);
         glVertex3f(1.0f, 0.0f,-1.0f);
         glVertex3f(-1.0f, 0.0f,-1.0f);
+
+        //Second Triangle
         glVertex3f(-1.0f, 0.0f,-1.0f);
         glVertex3f(-1.0f, 0.0f,1.0f);
         glVertex3f(1.0f,  0.0f, 1.0f);
@@ -149,9 +161,39 @@ void reactKeyboard(unsigned char c, int x, int y){
         case '-':
             yScale -= 0.1f;
             break;
+        case '1':
+            drawType = GL_LINE;
+            break;
+        case '2':
+            drawType = GL_FILL;
+            break;
+        case '3':
+            drawType = GL_POINT;
+
     }
 
     glutPostRedisplay();
+}
+
+void reactMouse(int button,int state, int x, int y){
+
+}
+
+void mouseMove(int x, int y) {
+
+    // Changing the bg color with X and Y pos of the mouse.
+    colorR = fabs(sin((x/15) * 3.142/180));
+    colorG = fabs(sin((y/15) * 3.142/180));
+    colorB = fabs(sin((x-y/20) * 3.142/180));
+
+    // Changing the angle considering mouse X position.
+    angle = x/3;
+
+    glClearColor(colorR,colorG,colorB,colorA);
+    glutPostRedisplay();
+
+
+
 }
 
 
@@ -175,6 +217,10 @@ int main(int argc, char **argv) {
 
 // put here the registration of the keyboard callbacks
     glutKeyboardFunc(reactKeyboard);
+    //glutMouseFunc(reactMouse);
+    //Callback to track mouse position
+    glutPassiveMotionFunc(mouseMove);
+
 
 
 
@@ -182,8 +228,10 @@ int main(int argc, char **argv) {
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 
+
 // enter GLUT's main cycle
 	glutMainLoop();
+
 
 	return 1;
 }
