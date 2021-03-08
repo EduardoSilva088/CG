@@ -79,9 +79,33 @@ void renderScene(void) {
 
 // put drawing instructions here
     glTranslatef(posx, posy, posz);
-    glRotatef(angle, 0,1,0);
+    glRotatef(angle, 1,0,0);
     glScalef(xScale,yScale,zScale);
 
+/*
+    glBegin(GL_LINES);
+        glColor3f(0,0,0);
+        glVertex3f(1.0f, 0.0f, 1.0f);
+        glVertex3f(1.0f, 0.0f,-1.0f);
+
+        glColor3f(0,0,0);
+        glVertex3f(1.0f,0.0f,-1.0f);
+        glVertex3f(-1.0f, 0.0f,-1.0f);
+
+        glColor3f(0,0,0);
+        glVertex3f(-1.0f, 0.0f,-1.0f);
+        glVertex3f(-1.0f, 0.0f,1.0f);
+
+        glColor3f(0,0,0);
+        glVertex3f(-1.0f, 0.0f,1.0f);
+        glVertex3f(1.0f, 0.0f, 1.0f);
+
+    glEnd();
+    */
+
+
+
+    glPolygonMode(GL_FRONT_AND_BACK, drawType);
     glBegin(GL_TRIANGLES);
 
         // Base
@@ -121,6 +145,9 @@ void renderScene(void) {
         glVertex3f(-1.0f, 0.0f,-1.0f);
         glVertex3f(-1.0f, 0.0f, 1.0f);
     glEnd();   // Done drawing the pyramid
+    
+    
+
 
 
 
@@ -219,7 +246,7 @@ int main(int argc, char **argv) {
     glutKeyboardFunc(reactKeyboard);
     //glutMouseFunc(reactMouse);
     //Callback to track mouse position
-    glutPassiveMotionFunc(mouseMove);
+    //glutPassiveMotionFunc(mouseMove);
 
 
 
