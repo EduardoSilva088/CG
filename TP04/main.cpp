@@ -23,10 +23,12 @@ GLuint buffers[1];
 
 GLuint nrVertex, vertexs;
 
-int timebase;
-float frames;
+int timebase = 0;
+double frames = 0;
 
 int slices = 100;
+
+bool vbo = true;
 
 void changeSize(int w, int h) {
 
@@ -63,39 +65,30 @@ void drawCylinder(float radius, float height, float slices){
 
     // cima
     glBegin(GL_TRIANGLES);
-    float green = 0;
-    float deslColor = 1 / slices;
     for (int i = 0; i < slices; i++){
-        glColor3f(0,green,0);
         glVertex3f(radius * sin(angle + desl),y,radius * cos(angle + desl));
         glVertex3f(0,y,0);
         glVertex3f(radius * sin(angle), y, radius * cos(angle));
 
         angle = desl * i;
-        green = deslColor * i;
     }
 
     glEnd();
 
     // baixo
     glBegin(GL_TRIANGLES);
-    green = 0;
     for(int i = 0; i < slices; i++){
-        glColor3f(0,green,0);
         glVertex3f(radius * sin(angle),-y,radius * cos(angle));
         glVertex3f(0,-y,0);
         glVertex3f(radius * sin(angle + desl), -y, radius * cos(angle+desl));
 
         angle = desl * i;
-        green = deslColor * i;
     }
     glEnd();
 
     //laterais
     glBegin(GL_TRIANGLES);
-    green = 0;
     for(int i = 0; i < slices; i++){
-        glColor3f(0,green,0);
 
         glVertex3f(radius * sin(angle),-y,radius * cos(angle));
         glVertex3f(radius * sin(angle + desl), -y, radius * cos(angle + desl));
@@ -106,7 +99,6 @@ void drawCylinder(float radius, float height, float slices){
         glVertex3f(radius * sin(angle),-y,radius * cos(angle));
 
         angle = desl * i;
-        green = deslColor * i;
     }
     glEnd();
 }
@@ -217,7 +209,6 @@ void frameRate(){
         double fps = frames * 1000.0 / (time - timebase);
         timebase = time;
         frames = 0;
-
         sprintf(title, "CG@di-UM |  %lf FPS", fps);
         glutSetWindowTitle(title);
     }
@@ -234,13 +225,20 @@ void renderScene(void) {
     gluLookAt(5.0,5.0,5.0,
               0.0,0.0,0.0,
               0.0f,1.0f,0.0f);
-    glColor3f(1,1,1);
 
+    if (vbo){
+        glColor3f(1,1,1);
+        glBindBuffer(GL_ARRAY_BUFFER, vertexs);
+        glVertexPointer(3,GL_FLOAT,0,0);
 
+        glDrawArrays(GL_TRIANGLES, 0, nrVertex);
+    }
 
-    glBindBuffer(GL_ARRAY_BUFFER, vertexs);
-    glVertexPointer(3,GL_FLOAT,0,0);
-    glDrawArrays(GL_TRIANGLES, 0, nrVertex);
+    else {
+        glColor3f(0,0,1);
+        drawCylinder(1, 2, slices);
+    }
+
 
 
     frameRate();
@@ -285,6 +283,9 @@ void reactKeyboard(unsigned char c, int x, int y){
             slices /= 2;
             drawCylinderVBO(1,2,slices);
             std::cout << "Slices:" << slices << std::endl;
+            break;
+        case 'v':
+            vbo = vbo ? false : true;
             break;
         case '1':
             drawType = GL_LINE;
@@ -347,9 +348,12 @@ int main(int argc, char **argv) {
     glGenBuffers(1, &vertexs);
     drawCylinderVBO(1,2,slices);
 
-    timebase = glutGet(GLUT_ELAPSED_TIME);
+
 
 // enter GLUT's main cycle
+
+    timebase = glutGet(GLUT_ELAPSED_TIME);
+
     glutMainLoop();
 
     return 1;
