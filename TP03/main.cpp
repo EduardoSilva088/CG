@@ -54,8 +54,8 @@ void drawCylinder(float radius, float height, float slices){
     glBegin(GL_TRIANGLES);
     float green = 0;
     float deslColor = 1 / slices;
-    for (int i = 0; i < slices; i++){
-        glColor3f(0,green,0);
+    for (int i = 0; i <= slices; i++){
+        glColor3f(0,1,0);
         glVertex3f(radius * sin(angle + desl),y,radius * cos(angle + desl));
         glVertex3f(0,y,0);
         glVertex3f(radius * sin(angle), y, radius * cos(angle));
@@ -69,8 +69,8 @@ void drawCylinder(float radius, float height, float slices){
     // baixo
     glBegin(GL_TRIANGLES);
     green = 0;
-    for(int i = 0; i < slices; i++){
-        glColor3f(0,green,0);
+    for(int i = 0; i <= slices; i++){
+        glColor3f(0,1,0);
         glVertex3f(radius * sin(angle),-y,radius * cos(angle));
         glVertex3f(0,-y,0);
         glVertex3f(radius * sin(angle + desl), -y, radius * cos(angle+desl));
@@ -83,8 +83,8 @@ void drawCylinder(float radius, float height, float slices){
     //laterais
     glBegin(GL_TRIANGLES);
     green = 0;
-    for(int i = 0; i < slices; i++){
-        glColor3f(0,green,0);
+    for(int i = 0; i <= slices; i++){
+        glColor3f(0,1,0);
 
         glVertex3f(radius * sin(angle),-y,radius * cos(angle));
         glVertex3f(radius * sin(angle + desl), -y, radius * cos(angle + desl));
@@ -120,7 +120,7 @@ void renderScene(void) {
 
 // put drawing instructions here
     glTranslatef(posx, posy, posz);
-    glRotatef(angle, 0,1,0);
+    glRotatef(angle, 1,0,0);
     glScalef(xScale,yScale,zScale);
 
     drawCylinder(1, 2, 20);
@@ -205,7 +205,7 @@ int main(int argc, char **argv) {
 //  OpenGL settings
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
-	
+
 // enter GLUT's main cycle
 	glutMainLoop();
 	
